@@ -1,23 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import SelectArea from "./components/select/Select";
+import AreaInfo from "./components/area-info/AreaInfo";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>City Info</h2>
+        <div className={"container"}>
+            <div className={"area-select"}>
+                <SelectArea/>
+            </div>
+            <div className={"area-info"}>
+                <AreaInfo/>
+            </div>
+        </div>
+
     </div>
   );
 }
