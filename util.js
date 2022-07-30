@@ -19,6 +19,7 @@ function getData(url) {
 async function checkArea(urbId) {
     /// https://api.teleport.org/api/urban_areas/slug:aarhus/
     /// https://api.teleport.org/api/urban_areas/slug:san-francisco-bay-area/scores/
+    /// https://api.teleport.org/api/cities/?search=abc
     const slug = urbId.match(/slug:[a-z-0-9()]+/gi);
     const res = await getData(`https://api.teleport.org/api/urban_areas/${slug}/scores/`);
     console.log(`Processing ${slug}: ${!!res}`);
