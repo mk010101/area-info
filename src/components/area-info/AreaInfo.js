@@ -1,61 +1,92 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Chart as ChartJS, registerables} from 'chart.js';
 import {Bar} from 'react-chartjs-2'
 
 ChartJS.register(...registerables);
 
 
-const $data = {
-  labels: ['A', 'B', 'C'],
-  datasets: [
-    {
-      label: "My First dataset",
-      backgroundColor: "rgba(255,99,132,0.2)",
-      hoverBackgroundColor: "rgba(255,99,132,0.4)",
-      hoverBorderColor: "rgba(255,99,132,1)",
-      data: [65, 59, 80]
-    },
-    
-    {
-      label: "My second dataset",
-      backgroundColor: "rgba(155,231,91,0.2)",
-      hoverBackgroundColor: "rgba(255,99,132,0.4)",
-      hoverBorderColor: "rgba(255,99,132,1)",
-      data: [45, 79, 50]
-    },
-    
-    {
-      label: "My third dataset",
-      backgroundColor: "rgba(3,101,204,0.2)",
-      hoverBackgroundColor: "rgba(255,99,132,0.4)",
-      hoverBorderColor: "rgba(255,99,132,1)",
-      data: [10, 98, 33]
-    }
-  ]
+const data = {
+  labels: ['london', 'ny', 'paris'],
+  datasets: [],
 };
 
-const config = {
-  type: 'bar',
-  //indexAxis: 'y',
+
+const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'left',
+    },
+    title: {
+      display: false,
+      text: 'Chart.js Bar Chart',
+    },
+  },
 };
 
+const categories = [
+  'Housing',
+  'Cost of Living',
+  'Commute',
+  'Safety',
+  'Healthcare',
+  'Education',
+  'Economy'
+];
+
+const colors = [
+  "rgba(140,255,14,0.5)",
+  "rgba(57,17,255,0.5)",
+  "rgba(106,255,233,0.5)",
+  "rgba(255,99,132,0.5)",
+  "rgba(255,196,9,0.5)",
+  "rgba(6,112,255,0.5)",
+  "rgba(207,158,255,0.5)",
+];
+
+for (let i = 0; i < categories.length; i++) {
+  data.datasets.push({
+    label: categories[i],
+    backgroundColor: colors[i],
+    data: [10]
+  });
+}
 
 export default function AreaInfo(props) {
   
-  const list = props.data;
-  //console.log(list)
-  const data = {
-    labels: [],
-    datasets: [],
-  };
   
-  list.map((v) => {
-    data.labels.push(v.label);
+  const [info, setInfo] = useState(data);
+  
+  useEffect(() => {
+    if (props.data.length > 0) {
+      const d = JSON.parse(JSON.stringify(data));
+      
+      const list = props.data;
+      d.labels = [];
+      d.datasets.forEach(v => v.data = []);
+      
+      list.forEach(v => {
+        d.labels.push(v.name);
+        for (let i = 0; i < v.data.categories.length; i++) {
+          const cat = v.data.categories[i];
+          console.log(cat)
+          if (categories.includes(cat.name)) {
+            d.datasets.forEach(v => {
+              if (v.label === cat.name) {
+                v.data.push(cat.score_out_of_10);
+              }
+            })
+          }
+          
+        }
+      });
+      
+      setInfo(d);
+    }
     
-  });
-  
+  }, [props.data]);
   
   return (
-    <Bar data={$data} options={config}/>
+    <Bar options={options} data={info}/>
   )
 }

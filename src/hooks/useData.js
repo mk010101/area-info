@@ -1,31 +1,38 @@
 import {useEffect, useMemo, useState} from "react";
 
-function getItem(url) {
-  return new Promise(async (resolve) => {
+const api = "https://api.teleport.org/api/urban_areas";
 
-    const resp = await fetch(url);
-    // console.log(resp)
+function getItem(item) {
+  return new Promise(async (resolve) => {
+    if (! item) {
+      resolve({status: 404, statusText: 'no url', data: null});
+      return;
+    }
+    const resp = await fetch(item.url);
+    //console.log(resp)
     if (resp.status === 200) {
       const json = await resp.json();
-      resolve({status: 200, statusText: '', data: json});
+      resolve({status: 200, statusText: '', data: json, name:item.name});
     } else {
       resolve({status: resp.status, statusText: resp.statusText, data: null});
     }
   });
 }
 
-const api = "https://api.teleport.org/api/urban_areas";
 
 export default function useData(urls) {
   const [data, setData] = useState([]);
-  const arr = urls.map(v => {
-    return `${api}/${v.value[0]}/scores/`;
+
+  const arr = urls.map((v, i) => {
+    return {
+      name:v.label,
+      url: `${api}/${v.value[0]}/scores/`,
+    }
   });
-  
-  const str = useMemo(() => arr.join('|'), [arr]);
+  const str = useMemo(() => JSON.stringify(arr), [arr]);
   
   useEffect(() => {
-    const items = str.split("|");
+    const items = JSON.parse(str);
     const infos = [];
     for (const item of items) {
       getItem(item)
@@ -39,3 +46,4 @@ export default function useData(urls) {
   return data;
 
 }
+
