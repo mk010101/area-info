@@ -30,8 +30,6 @@ export default function AreaInfo({data}) {
     if (data.length > 0) {
       setInfo(parseData(data));
     }
-    
-    
   }, [data]);
   
   return (
