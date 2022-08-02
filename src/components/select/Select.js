@@ -24,7 +24,7 @@ export default function SelectArea(props) {
                 value={selectedOptions}
                 isMulti={true}
                 isOptionDisabled={() => selectedOptions.length >= 3}
-                className="select-area"
+                className="area-selector"
                 onChange={onChange}
                 placeholder="Select urban areas (max 3)"
             />

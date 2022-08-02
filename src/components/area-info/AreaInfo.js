@@ -1,92 +1,41 @@
 import React, {useEffect, useState} from "react";
-import {Chart as ChartJS, registerables} from 'chart.js';
-import {Bar} from 'react-chartjs-2'
-
-ChartJS.register(...registerables);
+import parse from 'html-react-parser';
+import './AreaInfo.css';
 
 
-const data = {
-  labels: ['london', 'ny', 'paris'],
-  datasets: [],
-};
+function parseData(data) {
 
-
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'left',
-    },
-    title: {
-      display: false,
-      text: 'Chart.js Bar Chart',
-    },
-  },
-};
-
-const categories = [
-  'Housing',
-  'Cost of Living',
-  'Commute',
-  'Safety',
-  'Healthcare',
-  'Education',
-  'Economy'
-];
-
-const colors = [
-  "rgba(140,255,14,0.5)",
-  "rgba(57,17,255,0.5)",
-  "rgba(106,255,233,0.5)",
-  "rgba(255,99,132,0.5)",
-  "rgba(255,196,9,0.5)",
-  "rgba(6,112,255,0.5)",
-  "rgba(207,158,255,0.5)",
-];
-
-for (let i = 0; i < categories.length; i++) {
-  data.datasets.push({
-    label: categories[i],
-    backgroundColor: colors[i],
-    data: [10]
-  });
+  return (
+    data.map(v => {
+      let summary = v.data.summary;
+      summary = summary.replace(/<b>/g, '');
+      summary = summary.replace(/<\/b>/g, '');
+      summary = summary.replace(/<i>(.*?)<\/i>/g, '');
+      summary = summary.replace(/<br>/g, '');
+      return (
+        <div key={'a-' + v.name}>
+          <h3>{v.name}</h3>
+          <div>{parse(summary)}</div>
+        </div>
+      )
+    })
+  );
 }
 
-export default function AreaInfo(props) {
+export default function AreaInfo({data}) {
   
-  
-  const [info, setInfo] = useState(data);
+  const [info, setInfo] = useState(null);
   
   useEffect(() => {
-    if (props.data.length > 0) {
-      const d = JSON.parse(JSON.stringify(data));
-      
-      const list = props.data;
-      d.labels = [];
-      d.datasets.forEach(v => v.data = []);
-      
-      list.forEach(v => {
-        d.labels.push(v.name);
-        for (let i = 0; i < v.data.categories.length; i++) {
-          const cat = v.data.categories[i];
-          console.log(cat)
-          if (categories.includes(cat.name)) {
-            d.datasets.forEach(v => {
-              if (v.label === cat.name) {
-                v.data.push(cat.score_out_of_10);
-              }
-            })
-          }
-          
-        }
-      });
-      
-      setInfo(d);
+    if (data.length > 0) {
+      setInfo(parseData(data));
     }
     
-  }, [props.data]);
+    
+  }, [data]);
   
   return (
-    <Bar options={options} data={info}/>
+    <div className={'area-info'}>{info}</div>
   )
+  
 }

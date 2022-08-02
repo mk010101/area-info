@@ -8,19 +8,23 @@ function getItem(item) {
       resolve({status: 404, statusText: 'no url', data: null});
       return;
     }
-    const resp = await fetch(item.url);
-    //console.log(resp)
-    if (resp.status === 200) {
-      const json = await resp.json();
-      resolve({status: 200, statusText: '', data: json, name:item.name});
-    } else {
-      resolve({status: resp.status, statusText: resp.statusText, data: null});
+    try {
+      const resp = await fetch(item.url);
+      if (resp.status === 200) {
+        const json = await resp.json();
+        resolve({status: 200, statusText: '', data: json, name:item.name});
+      } else {
+        resolve({status: resp.status, statusText: resp.statusText, data: null});
+      }
+    } catch (err) {
+      console.log(err);
     }
+    
   });
 }
 
 
-export default function useData(urls) {
+export default function useTeleport(urls) {
   const [data, setData] = useState([]);
 
   const arr = urls.map((v, i) => {
