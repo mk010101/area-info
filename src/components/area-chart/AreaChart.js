@@ -7,6 +7,9 @@ ChartJS.register(...registerables);
 
 const options = {
   responsive: true,
+  layout: {
+    //margin: 0
+  },
   plugins: {
     legend: {
       position: 'left',
@@ -70,7 +73,6 @@ export default function AreaChart({data}) {
   useEffect(() => {
     if (data.length > 0) {
       const d = getDataSet();
-      
       const list = data;
       d.labels = [];
       d.datasets.forEach(v => v.data = []);

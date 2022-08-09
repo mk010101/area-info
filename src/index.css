@@ -25,6 +25,10 @@ code {
     width: 36%;
 }
 
+.area-selector {
+    margin-top: 5px;
+    display: block;
+}
 
 .area-chart {
     width: 64%;
@@ -34,10 +38,10 @@ code {
     position: sticky;
 }
 
-@media screen and (max-width: 860px) {
+@media screen and (max-width: 1024px) {
 
     .container {
-        display: block;
+        flex-direction: column;
     }
 
     .area-select {
